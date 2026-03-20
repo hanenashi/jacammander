@@ -132,61 +132,66 @@ Recommended early behavior:
 
 This keeps the codebase unified while avoiding the pain of maintaining separate apps too early.
 
-## Proposed repository structure
 
-jacammander/
-|
-|- main.py
-|- launcher.py
-|- requirements.txt
-|- README.md
-|
-|- app/
-|  |- __init__.py
-|  |
-|  |- core/
-|  |  |- __init__.py
-|  |  |- protocol.py
-|  |  |- file_ops.py
-|  |  |- transfer.py
-|  |  |- security.py
-|  |  \- validators.py
-|  |
-|  |- net/
-|  |  |- __init__.py
-|  |  |- server.py
-|  |  |- client.py
-|  |  |- connection.py
-|  |  \- packet.py
-|  |
-|  |- gui/
-|  |  |- __init__.py
-|  |  |- app_window.py
-|  |  |- server_panel.py
-|  |  |- client_panel.py
-|  |  |- dialogs.py
-|  |  \- widgets.py
-|  |
-|  |- config/
-|  |  |- __init__.py
-|  |  |- settings.py
-|  |  \- defaults.py
-|  |
-|  |- debug/
-|  |  |- __init__.py
-|  |  |- logger.py
-|  |  \- crash_handler.py
-|  |
-|  \- common/
-|     |- __init__.py
-|     |- constants.py
-|     \- utils.py
-|
-|- assets/
-|  \- icon.ico
-|
-\- build/
-   \- pyinstaller.spec
+    ## Proposed repository structure
+    
+    ```text
+    jacammander/
+    |
+    |- main.py
+    |- launcher.py
+    |- requirements.txt
+    |- README.md
+    |
+    |- app/
+    |  |- __init__.py
+    |  |
+    |  |- core/
+    |  |  |- __init__.py
+    |  |  |- protocol.py
+    |  |  |- file_ops.py
+    |  |  |- transfer.py
+    |  |  |- security.py
+    |  |  \- validators.py
+    |  |
+    |  |- net/
+    |  |  |- __init__.py
+    |  |  |- server.py
+    |  |  |- client.py
+    |  |  |- connection.py
+    |  |  \- packet.py
+    |  |
+    |  |- gui/
+    |  |  |- __init__.py
+    |  |  |- app_window.py
+    |  |  |- server_panel.py
+    |  |  |- client_panel.py
+    |  |  |- dialogs.py
+    |  |  \- widgets.py
+    |  |
+    |  |- config/
+    |  |  |- __init__.py
+    |  |  |- settings.py
+    |  |  \- defaults.py
+    |  |
+    |  |- debug/
+    |  |  |- __init__.py
+    |  |  |- logger.py
+    |  |  \- crash_handler.py
+    |  |
+    |  \- common/
+    |     |- __init__.py
+    |     |- constants.py
+    |     \- utils.py
+    |
+    |- assets/
+    |  \- icon.ico
+    |
+    \- build/
+       \- pyinstaller.spec
+    ```
+
+So yes: **tree inside triple backticks**. Otherwise Markdown gets ideas above its station.
 
 This is modular enough to stay sane, but not so over-engineered that a tiny LAN utility turns into fake enterprise theater.
 
