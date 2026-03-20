@@ -135,7 +135,7 @@ This keeps the codebase unified while avoiding the pain of maintaining separate 
 
     ## Proposed repository structure
     
-    ```text
+    ```
     jacammander/
     |
     |- main.py
