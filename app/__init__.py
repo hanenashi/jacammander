@@ -1,0 +1,1 @@
+"""Jacammander application package."""
