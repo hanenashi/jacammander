@@ -129,3 +129,39 @@ class JacammanderClient:
             err = resp.get(constants.KEY_MESSAGE, "Unknown error") if resp else "No response"
             log.error("Upload failed: {0}".format(err))
             return False
+
+    # --- NEW v0.2 COMMANDS ---
+
+    def delete_item(self, remote_path):
+        if not self.connected:
+            log.error("Cannot delete item: Not connected.")
+            return False
+
+        req = protocol.build_request(constants.CMD_DELETE, {"path": remote_path})
+        packet.send_message(self.sock, req)
+        
+        resp = packet.recv_message(self.sock)
+        if resp and resp.get(constants.KEY_STATUS) == "OK":
+            log.info("Deleted remote item: {0}".format(remote_path))
+            return True
+        else:
+            err = resp.get(constants.KEY_MESSAGE, "Unknown error") if resp else "No response"
+            log.error("Delete failed: {0}".format(err))
+            return False
+
+    def create_directory(self, remote_path):
+        if not self.connected:
+            log.error("Cannot create directory: Not connected.")
+            return False
+
+        req = protocol.build_request(constants.CMD_MKDIR, {"path": remote_path})
+        packet.send_message(self.sock, req)
+        
+        resp = packet.recv_message(self.sock)
+        if resp and resp.get(constants.KEY_STATUS) == "OK":
+            log.info("Created remote directory: {0}".format(remote_path))
+            return True
+        else:
+            err = resp.get(constants.KEY_MESSAGE, "Unknown error") if resp else "No response"
+            log.error("MKDIR failed: {0}".format(err))
+            return False

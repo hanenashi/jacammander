@@ -17,7 +17,14 @@ def list_directory(root_dir, rel_path=""):
         raise ValueError("Directory does not exist.")
         
     items = []
-    for entry in os.listdir(target_dir):
+    
+    # Protect against accessing heavily locked system folders
+    try:
+        entries = os.listdir(target_dir)
+    except OSError:
+        raise OSError("Access denied reading directory.")
+
+    for entry in entries:
         full_path = os.path.join(target_dir, entry)
         is_dir = os.path.isdir(full_path)
         
@@ -26,7 +33,7 @@ def list_directory(root_dir, rel_path=""):
             size = stat.st_size if not is_dir else 0
             mtime = stat.st_mtime
         except OSError:
-            # Skip files locked by the OS (like pagefile.sys)
+            # Skip files locked by the OS (like pagefile.sys or Thumbs.db)
             continue
             
         items.append({

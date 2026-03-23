@@ -3,6 +3,7 @@
 import os
 import socket
 import threading
+import shutil
 from app.common import constants
 from app.debug.logger import get_logger
 from app.net import packet
@@ -96,6 +97,8 @@ class JacammanderServer:
                         ))
                     except ValueError as ve:
                         packet.send_message(client_sock, protocol.build_error(str(ve)))
+                    except OSError:
+                        packet.send_message(client_sock, protocol.build_error("Access denied to folder."))
 
                 elif cmd == constants.CMD_DOWNLOAD:
                     if not authenticated:
@@ -112,10 +115,19 @@ class JacammanderServer:
                     if not os.path.exists(target_path) or not os.path.isfile(target_path):
                         packet.send_message(client_sock, protocol.build_error("File not found"))
                         continue
+                    
+                    try:
+                        file_size = os.path.getsize(target_path)
+                    except OSError:
+                        packet.send_message(client_sock, protocol.build_error("File is locked by OS."))
+                        continue
                         
-                    file_size = os.path.getsize(target_path)
                     packet.send_message(client_sock, protocol.build_response("OK", payload={"size": file_size}))
-                    transfer.send_file(client_sock, target_path)
+                    try:
+                        transfer.send_file(client_sock, target_path)
+                    except Exception as e:
+                        log.error("Transfer failed mid-stream: {0}".format(e))
+                        break
 
                 elif cmd == constants.CMD_UPLOAD:
                     if not authenticated:
@@ -131,7 +143,54 @@ class JacammanderServer:
                         continue
                         
                     packet.send_message(client_sock, protocol.build_response("OK"))
-                    transfer.receive_file(client_sock, target_path, file_size)
+                    try:
+                        transfer.receive_file(client_sock, target_path, file_size)
+                    except Exception as e:
+                        log.error("Upload failed mid-stream: {0}".format(e))
+                        break
+
+                elif cmd == constants.CMD_DELETE:
+                    if not authenticated:
+                        packet.send_message(client_sock, protocol.build_error("Not authenticated"))
+                        continue
+                    
+                    rel_path = payload.get("path", "")
+                    target_path = os.path.abspath(os.path.join(self.root_dir, rel_path))
+                    
+                    if not file_ops.is_path_safe(self.root_dir, target_path):
+                        packet.send_message(client_sock, protocol.build_error("Access denied"))
+                        continue
+                        
+                    if not os.path.exists(target_path):
+                        packet.send_message(client_sock, protocol.build_error("File or folder not found"))
+                        continue
+                        
+                    try:
+                        if os.path.isdir(target_path):
+                            shutil.rmtree(target_path)
+                        else:
+                            os.remove(target_path)
+                        packet.send_message(client_sock, protocol.build_response("OK", "Deleted successfully"))
+                    except OSError as e:
+                        packet.send_message(client_sock, protocol.build_error("Failed to delete: {0}".format(e)))
+
+                elif cmd == constants.CMD_MKDIR:
+                    if not authenticated:
+                        packet.send_message(client_sock, protocol.build_error("Not authenticated"))
+                        continue
+                    
+                    rel_path = payload.get("path", "")
+                    target_path = os.path.abspath(os.path.join(self.root_dir, rel_path))
+                    
+                    if not file_ops.is_path_safe(self.root_dir, target_path):
+                        packet.send_message(client_sock, protocol.build_error("Access denied"))
+                        continue
+                        
+                    try:
+                        os.makedirs(target_path, exist_ok=True)
+                        packet.send_message(client_sock, protocol.build_response("OK", "Directory created"))
+                    except OSError as e:
+                        packet.send_message(client_sock, protocol.build_error("Failed to create dir: {0}".format(e)))
 
                 else:
                     packet.send_message(client_sock, protocol.build_error("Unknown command"))
