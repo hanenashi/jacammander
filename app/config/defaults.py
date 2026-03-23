@@ -1,0 +1,6 @@
+"""Default settings for Jacammander."""
+
+DEFAULT_PORT = 9009
+DEFAULT_LANGUAGE = "en"
+DEFAULT_WINDOW_WIDTH = 980
+DEFAULT_WINDOW_HEIGHT = 640
