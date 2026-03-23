@@ -31,18 +31,15 @@ jobs:
           pip install -r requirements-build.txt
 
       - name: Build EXE (onedir first)
+        run: pyinstaller --noconfirm --clean --windowed --name Jacammander --paths . main.py
+
+      - name: Show dist folder
         run: |
-          pyinstaller ^
-            --noconfirm ^
-            --clean ^
-            --windowed ^
-            --name Jacammander ^
-            --paths . ^
-            main.py
+          dir dist
+          dir dist\Jacammander
 
       - name: Pack artifact
-        run: |
-          powershell -Command "Compress-Archive -Path dist/Jacammander/* -DestinationPath dist/Jacammander-win81-x64.zip"
+        run: powershell -Command "Compress-Archive -Path dist/Jacammander/* -DestinationPath dist/Jacammander-win81-x64.zip -Force"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
