@@ -3,21 +3,20 @@
 import sys
 import os
 
-# Ensure the 'app' directory is in the path so we can import cleanly
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from app.common.constants import APP_NAME, APP_VERSION
 from app.debug.logger import get_logger
+from app.gui.app_window import JacammanderApp
 
 def main():
     log = get_logger()
-    log.info(f"Starting {APP_NAME} v{APP_VERSION}...")
-    log.debug("Initializing Python LAN file manager.")
+    log.info("Starting Jacammander UI...")
     
-    # TODO: Load settings
-    # TODO: Launch GUI Chooser (Server vs Client)
+    # Launch the Tkinter loop
+    app = JacammanderApp()
+    app.mainloop()
     
-    log.info("Initialization complete. Awaiting GUI hookup.")
+    log.info("Application closed.")
 
 if __name__ == "__main__":
     main()
