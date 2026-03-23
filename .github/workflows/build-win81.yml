@@ -1,4 +1,4 @@
-name: Build Jacammander for Win 8.1
+name: Build Jacammander for Win 8.1 x86
 
 on:
   workflow_dispatch:
@@ -22,11 +22,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.8 x64
+      - name: Set up Python 3.8 x86
         uses: actions/setup-python@v5
         with:
           python-version: '3.8'
-          architecture: 'x64'
+          architecture: 'x86'
 
       - name: Show Python
         run: |
@@ -47,13 +47,13 @@ jobs:
           dir dist\Jacammander
 
       - name: Pack artifact (onedir)
-        run: powershell -Command "Compress-Archive -Path dist/Jacammander/* -DestinationPath dist/Jacammander-win81-x64-onedir.zip -Force"
+        run: powershell -Command "Compress-Archive -Path dist/Jacammander/* -DestinationPath dist/Jacammander-win81-x86-onedir.zip -Force"
 
       - name: Upload artifact (onedir)
         uses: actions/upload-artifact@v4
         with:
-          name: Jacammander-win81-x64-onedir
-          path: dist/Jacammander-win81-x64-onedir.zip
+          name: Jacammander-win81-x86-onedir
+          path: dist/Jacammander-win81-x86-onedir.zip
 
   build-win81-onefile:
     if: ${{ github.event.inputs.build_mode == 'onefile' || github.event.inputs.build_mode == 'both' }}
@@ -63,11 +63,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.8 x64
+      - name: Set up Python 3.8 x86
         uses: actions/setup-python@v5
         with:
           python-version: '3.8'
-          architecture: 'x64'
+          architecture: 'x86'
 
       - name: Show Python
         run: |
@@ -89,5 +89,5 @@ jobs:
       - name: Upload artifact (onefile)
         uses: actions/upload-artifact@v4
         with:
-          name: Jacammander-win81-x64-onefile
+          name: Jacammander-win81-x86-onefile
           path: dist/Jacammander-onefile.exe
