@@ -1,0 +1,23 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller build folders
+build/
+dist/
+*.manifest
+
+# Jacammander specific (Never commit your personal settings or massive test files!)
+jacammander_config.json
+*test.dat
+*.log
+
+# OS Generated
+.DS_Store
+Thumbs.db
+
+# Virtual Environments (if you use them later)
+venv/
+.venv/
+env/
